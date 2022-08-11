@@ -15,6 +15,15 @@ struct ContentView: View {
     
     let tipPercentages = [10, 15, 20, 25, 0]
     
+    var currencyDisplay = FloatingPointFormatStyle<Double>.Currency
+        .currency(code: Locale.current.currencyCode ?? "USD")
+    var currencyDisplay2: FloatingPointFormatStyle<Double>.Currency = .currency(code: Locale.current.currencyCode ?? "USD")
+    var currencyDisplay3: FloatingPointFormatStyle<Double>.Currency { .currency(code: Locale.current.currencyCode ?? "USD") }
+    
+        
+            
+    
+    
     var totalPerPerson: Double {
         let peopleCount = Double(numberOfPeople + 2)
         let tipSelection = Double(tipPercent)
@@ -24,6 +33,15 @@ struct ContentView: View {
         let amountPerPerson = grandTotal / peopleCount
         
         return amountPerPerson
+    }
+    
+    var grandTotal: Double {
+        
+        
+        let tipSelection = Double(tipPercent)
+        let tipValue = checkAmount / 100 * tipSelection
+        
+        return checkAmount + tipValue
     }
     
     var body: some View {
@@ -45,13 +63,25 @@ struct ContentView: View {
                         ForEach(tipPercentages, id: \.self) {
                             Text($0, format: .percent)
                         }
+                        
                     }
-                    .pickerStyle(.segmented)
+                   
                 } header: {
                     Text("How much tip do you want to leave?")
                 }
                 Section {
-                    Text(totalPerPerson, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                    Text(grandTotal, format: currencyDisplay)
+                }
+                
+            header: {
+                    Text("Check total")
+                }
+            .foregroundColor(tipPercent == 0 ? .red : .primary)
+                
+                Section {
+                    Text(totalPerPerson, format: currencyDisplay)
+                }header: {
+                    Text("Amount per person")
                 }
                 
             }
